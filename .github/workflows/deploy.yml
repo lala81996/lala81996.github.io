@@ -10,6 +10,12 @@ permissions:
   pages: write
   id-token: write
 
+# One deployment at a time. In-progress runs are not cancelled so a running
+# production deployment always completes.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
