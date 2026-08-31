@@ -26,10 +26,12 @@ npm run dev
 ## Struktur
 
 ```
-.github/workflows/   Deploy nach GitHub Pages
-docs/decisions/      Architecture Decision Records
-public/              unverarbeitete statische Dateien
-src/pages/           Routen, file-based
+.github/workflows/     Deploy nach GitHub Pages
+docs/decisions/        Architecture Decision Records
+public/                unverarbeitete statische Dateien
+src/content.config.ts  Schemas der Content Collections
+src/content/           Inhalte der Content Collections
+src/pages/             Routen, file-based
 ```
 
 ## Entscheidungen
