@@ -1,0 +1,74 @@
+/* Layered rules lose against unlayered ones, so Astro's scoped component styles
+   override anything here without needing specificity tricks. */
+@layer base;
+
+@layer base {
+	:root {
+		color-scheme: light dark;
+
+		--color-surface: light-dark(#eeeeee, #0b1118);
+		--color-text: light-dark(#0b1118, #eeeeee);
+		--color-accent: light-dark(#dd3c87, #d19cff);
+		--color-shaded-accent: light-dark(#951953, #dfbdfd);
+
+		--font-body: system-ui, sans-serif;
+		/* Placeholder until a self-hosted display typeface is chosen. */
+		--font-display: var(--font-body);
+	}
+
+	/* light-dark() resolves against the inherited color-scheme, so overriding it
+	   is all the toggle has to do to repaint every token. */
+	:root[data-theme='light'] {
+		color-scheme: light;
+	}
+
+	:root[data-theme='dark'] {
+		color-scheme: dark;
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	body {
+		margin: 0;
+		padding: 1.5rem;
+		background-color: var(--color-surface);
+		color: var(--color-text);
+		font-family: var(--font-body);
+		line-height: 1.5;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--font-display);
+	}
+
+	img,
+	svg,
+	video {
+		display: block;
+		max-width: 100%;
+	}
+
+	a {
+		color: var(--color-accent);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	a:hover {
+		color: var(--color-shaded-accent);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+}

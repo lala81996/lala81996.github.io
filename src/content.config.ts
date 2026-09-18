@@ -16,7 +16,7 @@ const projekte = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		summary: z.string(),
-		typ: z.enum(['arbeit', 'eigen']),
+		typ: z.enum(['team', 'privat']),
 		rolle: z.string(),
 		bereiche: z.array(reference('bereiche')).nonempty(),
 		von: z.date(),

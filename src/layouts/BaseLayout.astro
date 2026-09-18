@@ -1,0 +1,36 @@
+---
+import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/base.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<script is:inline>
+			// Runs before first paint so a stored choice does not flash the other scheme.
+			try {
+				const stored = localStorage.getItem('theme');
+				if (stored === 'light' || stored === 'dark') {
+					document.documentElement.dataset.theme = stored;
+				}
+			} catch {
+				// Blocked storage: fall back to the OS setting.
+			}
+		</script>
+	</head>
+	<body>
+		<slot />
+		<ThemeToggle />
+	</body>
+</html>

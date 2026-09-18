@@ -1,0 +1,87 @@
+---
+
+---
+
+<button type="button" class="theme-toggle" hidden>
+	<svg
+		viewBox="0 0 16 16"
+		width="16"
+		height="16"
+		aria-hidden="true"
+		focusable="false"
+	>
+		<circle
+			cx="8"
+			cy="8"
+			r="7"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.5"></circle>
+		<path d="M8 1a7 7 0 0 1 0 14z" fill="currentColor"></path>
+	</svg>
+</button>
+
+<style>
+	.theme-toggle {
+		position: fixed;
+		right: 1.5rem;
+		bottom: 1.5rem;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border: 1px solid var(--color-accent);
+		border-radius: 50%;
+		background-color: transparent;
+		color: var(--color-accent);
+		cursor: pointer;
+	}
+
+	/* Without this the display above would defeat the hidden attribute. */
+	.theme-toggle[hidden] {
+		display: none;
+	}
+
+	.theme-toggle:hover {
+		background-color: var(--color-accent);
+		color: var(--color-surface);
+	}
+</style>
+
+<script>
+	const root = document.documentElement;
+	const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+	const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+	if (button) {
+		const effective = () =>
+			root.dataset.theme ?? (systemDark.matches ? 'dark' : 'light');
+
+		const updateLabel = () => {
+			button.setAttribute(
+				'aria-label',
+				effective() === 'dark'
+					? 'Zu hellem Farbschema wechseln'
+					: 'Zu dunklem Farbschema wechseln',
+			);
+		};
+
+		updateLabel();
+		// The button does nothing without scripting, so the markup ships it hidden.
+		button.hidden = false;
+
+		button.addEventListener('click', () => {
+			const next = effective() === 'dark' ? 'light' : 'dark';
+			root.dataset.theme = next;
+			try {
+				localStorage.setItem('theme', next);
+			} catch {
+				// Private browsing or blocked storage: the choice just lasts this page view.
+			}
+			updateLabel();
+		});
+
+		// Until the button is used, data-theme stays unset so the OS setting keeps winning.
+		systemDark.addEventListener('change', updateLabel);
+	}
+</script>

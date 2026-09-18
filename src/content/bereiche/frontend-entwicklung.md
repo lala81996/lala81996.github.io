@@ -5,6 +5,7 @@ stichworte:
   - Angular
   - Angular Signals
   - Angular Forms
+  - NX Monorepos
   - State
   - Routing
   - TypeScript
