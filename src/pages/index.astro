@@ -1,11 +1,33 @@
 ---
+import GradientVisual from '../components/GradientVisual.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="lolga8">
-	<div>
-		<h1>no need to rush.</h1>
-		<p>hi :) ... I'll be back in a sec.</p>
-		<a href="mailto:mail@example.org">text me.</a>
+	<div class="intro">
+		<div>
+			<h1>no need to rush.</h1>
+			<p>hi :) ... I'll be back in a sec.</p>
+			<a href="mailto:mail@example.org">text me.</a>
+		</div>
+		<GradientVisual class="intro-visual" />
 	</div>
 </BaseLayout>
+
+<style>
+	.intro {
+		display: grid;
+		gap: var(--space-l);
+		align-items: center;
+	}
+
+	@media (min-width: 48rem) {
+		.intro {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.intro-visual {
+			justify-self: end;
+		}
+	}
+</style>

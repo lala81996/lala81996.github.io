@@ -8,8 +8,20 @@
 
 		--color-surface: light-dark(#eeeeee, #0b1118);
 		--color-text: light-dark(#0b1118, #eeeeee);
-		--color-accent: light-dark(#dd3c87, #d19cff);
-		--color-shaded-accent: light-dark(#951953, #dfbdfd);
+		--color-accent: light-dark(#398ffd, #d19cff);
+		--color-shaded-accent: light-dark(#6391ce, #dfbdfd);
+
+		/* Brand gradient, identical in both schemes. Keep the #rrggbb and deg formats:
+		   src/lib/gradient-shader.ts parses them. public/favicon.svg copies the values. */
+		--gradient-1: #fb13eb;
+		--gradient-2: #92fdce;
+		--gradient-3: #ff5a63;
+		--gradient-4: #398ffd;
+		--gradient-angle: 160deg;
+
+		--space-l: 3rem;
+		--radius-l: 1.5rem;
+		--visual-max-width: 32rem;
 
 		--font-body: system-ui, sans-serif;
 		/* Placeholder until a self-hosted display typeface is chosen. */
