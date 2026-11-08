@@ -1,12 +1,14 @@
 ---
 title: UX und Design-Bewertung
 order: 4
-stichworte:
+focus:
   - Usability-Bewertung
   - Design-Bewertung
   - Wireframing
   - UI-Planungsdokumente
+tools:
   - Figma
+  - Affinity
   - Adobe XD
 ---
 

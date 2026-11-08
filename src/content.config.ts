@@ -2,26 +2,27 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const bereiche = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/bereiche' }),
+const areas = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/areas' }),
 	schema: z.object({
 		title: z.string(),
 		order: z.number().int().positive(),
-		stichworte: z.array(z.string()).nonempty(),
+		focus: z.array(z.string()).nonempty(),
+		tools: z.array(z.string()).default([]),
 	}),
 });
 
-const projekte = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/projekte' }),
+const projects = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
 	schema: z.object({
 		title: z.string(),
 		summary: z.string(),
-		typ: z.enum(['team', 'privat']),
-		rolle: z.string(),
-		bereiche: z.array(reference('bereiche')).nonempty(),
-		von: z.date(),
+		type: z.enum(['team', 'private']),
+		role: z.string(),
+		areas: z.array(reference('areas')).nonempty(),
+		start: z.date(),
 		// An absent value means the project is still running.
-		bis: z.date().optional(),
+		end: z.date().optional(),
 		links: z
 			.array(
 				z.object({
@@ -33,11 +34,11 @@ const projekte = defineCollection({
 	}),
 });
 
-const zitate = defineCollection({
-	loader: file('src/content/zitate.json'),
+const quotes = defineCollection({
+	loader: file('src/content/quotes.json'),
 	schema: z.object({
 		text: z.string(),
 	}),
 });
 
-export const collections = { bereiche, projekte, zitate };
+export const collections = { areas, projects, quotes };

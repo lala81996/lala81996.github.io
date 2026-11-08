@@ -208,4 +208,25 @@
 			color: var(--color-text);
 		}
 	}
+
+	/*
+	 * Items wrap as whole units. The separator sits inside each item so it never
+	 * starts a line, and its empty alt text keeps screen readers from announcing it.
+	 * Safari drops list semantics under list-style: none unless the list has role="list".
+	 */
+	.inline-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.inline-list > li {
+		display: inline-block;
+	}
+
+	.inline-list > li:not(:last-child)::after {
+		/* Browsers without alt-text support drop the second declaration and keep the first. */
+		content: '\00a0·\00a0';
+		content: '\00a0·\00a0' / '';
+	}
 }

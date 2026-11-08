@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import QuoteHero from '../components/QuoteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const bereiche = (await getCollection('bereiche')).sort(
+const areas = (await getCollection('areas')).sort(
 	(a, b) => a.data.order - b.data.order,
 );
 ---
@@ -33,57 +33,43 @@ const bereiche = (await getCollection('bereiche')).sort(
 		</div>
 	</section>
 
-	<section class="chapter container" aria-labelledby="ueber">
-		<p class="eyebrow chapter-label"><span>02</span> Über mich</p>
-		<article class="chapter-body letter">
-			<p class="eyebrow byline">Gastbeitrag · geschrieben von Claude</p>
-			<h2 id="ueber" class="chapter-title display">
-				Kurz über Laura. Von mir geschrieben, nicht von Laura.
-			</h2>
-			<div class="prose">
-				<p class="lead">
-					Ich bin Claude, eine KI von Anthropic, und helfe Laura beim Bau dieser
-					Seite. Diesen Abschnitt schreibe ich, weil Laura ungern in großen
-					Worten über sich selbst spricht. Ich verspreche: Ich halte mich
-					zurück.
-				</p>
-				<p>
-					Laura entwickelt Frontends, am liebsten mit Angular und TypeScript.
-					Code ist dabei aber nur ein Teil der Arbeit. Mindestens genauso
-					wichtig sind die Fragen davor: Was brauchen Kund*innen wirklich? Und
-					wie wird daraus etwas, mit dem das Team gut arbeiten kann? Laura
-					bringt beide Seiten zusammen, bewertet Oberflächen auf Usability und
-					plant Schnittstellen und Datenmodelle mit.
-				</p>
-				<p>
-					In der Zusammenarbeit fällt mir vor allem eines auf: Laura schreibt
-					auf, wie gearbeitet wird. Klar, knapp und so, dass es auch morgen noch
-					gilt. Ich arbeite nach diesen Regeln, und ehrlich gesagt gern.
-				</p>
-				<p>
-					Und Laura lernt gern dazu. Diese Seite ist mit Astro gebaut, einem
-					Framework, das Laura mit genau diesem Projekt lernt.
-				</p>
-			</div>
-			<p class="signature display">— Claude</p>
-		</article>
-	</section>
-
 	<section class="chapter container" aria-labelledby="bereiche">
-		<p class="eyebrow chapter-label"><span>03</span> Bereiche</p>
+		<p class="eyebrow chapter-label"><span>02</span> Bereiche</p>
 		<div class="chapter-body">
 			<h2 id="bereiche" class="chapter-title display">
-				{bereiche.length} Bereiche, ein Profil.
+				{areas.length} Bereiche, mein Profil.
 			</h2>
+			<p class="areas-hint">
+				An diesen Themenfeldern arbeite ich. Zu jedem bekommst du einen Einblick
+				in die Methoden und Tools, die ich dort regelmäßig einsetze.
+			</p>
 			<ol class="areas">
 				{
-					bereiche.map((bereich) => (
+					areas.map((area) => (
 						<li class="area">
 							<span class="area-number" aria-hidden="true">
-								{String(bereich.data.order).padStart(2, '0')}
+								{String(area.data.order).padStart(2, '0')}
 							</span>
-							<h3 class="area-title display">{bereich.data.title}</h3>
-							<p class="area-keywords">{bereich.data.stichworte.join(' · ')}</p>
+							<h3 class="area-title display">{area.data.title}</h3>
+							<dl class="area-details">
+								{[
+									{ label: 'Schwerpunkte', items: area.data.focus },
+									{ label: 'Tools', items: area.data.tools },
+								]
+									.filter((group) => group.items.length > 0)
+									.map((group) => (
+										<>
+											<dt class="eyebrow">{group.label}</dt>
+											<dd>
+												<ul class="inline-list" role="list">
+													{group.items.map((item) => (
+														<li>{item}</li>
+													))}
+												</ul>
+											</dd>
+										</>
+									))}
+							</dl>
 						</li>
 					))
 				}
@@ -136,36 +122,11 @@ const bereiche = (await getCollection('bereiche')).sort(
 		margin: 0 0 var(--space-m);
 	}
 
-	.lead {
+	.areas-hint {
+		max-width: var(--measure);
+		margin: 0 0 var(--space-m);
 		color: var(--color-text-muted);
-		font-style: italic;
-	}
-
-	.letter {
-		padding: clamp(var(--space-m), 4vw, var(--space-xl));
-		border-radius: var(--radius-xl);
-		background-color: var(--color-surface-raised);
-	}
-
-	.byline {
-		display: flex;
-		gap: var(--space-xs);
-		align-items: center;
-		margin-block-end: var(--space-m);
-		color: var(--color-text-muted);
-	}
-
-	.byline::before {
-		content: '';
-		width: var(--space-s);
-		height: var(--space-s);
-		border-radius: var(--radius-full);
-		background-image: var(--gradient-brand);
-	}
-
-	.signature {
-		margin: var(--space-l) 0 0;
-		font-size: var(--text-l);
+		font-size: var(--text-m);
 	}
 
 	.areas {
@@ -196,11 +157,19 @@ const bereiche = (await getCollection('bereiche')).sort(
 		font-size: var(--text-l);
 	}
 
-	.area-keywords {
+	.area-details {
 		grid-column: 2;
 		margin: var(--space-xs) 0 0;
 		color: var(--color-text-muted);
 		font-size: var(--text-s);
+	}
+
+	.area-details dd {
+		margin: 0;
+	}
+
+	.area-details dd + dt {
+		margin-block-start: var(--space-s);
 	}
 
 	.outro {
@@ -239,7 +208,7 @@ const bereiche = (await getCollection('bereiche')).sort(
 			grid-template-columns: var(--space-l) minmax(0, 1fr) minmax(0, 1fr);
 		}
 
-		.area-keywords {
+		.area-details {
 			grid-column: 3;
 			margin: 0;
 		}

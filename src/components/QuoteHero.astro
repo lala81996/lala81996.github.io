@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import GradientVisual from './GradientVisual.astro';
 
-const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
+const quotes = (await getCollection('quotes')).map((entry) => entry.data.text);
 ---
 
 <section class="hero" aria-label="Ein Gedanke für zwischendurch">

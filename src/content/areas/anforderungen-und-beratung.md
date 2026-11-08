@@ -1,14 +1,19 @@
 ---
-title: Anforderungen und Beratung
+title: Anforderungen, Organisation und Beratung
 order: 3
-stichworte:
-  - Requirements-Engineering
+focus:
   - Anforderungsanalysen
   - Beratung
   - Kundenkommunikation
   - Planung
   - Konzeptionierung
-  - Schnittstellenfunktion
+tools:
+  - Markdown
+  - Notion
+  - Jira
+  - Nextcloud-Ökosystem
+  - Slack
+  - Artefakte
 ---
 
 <!-- Prosatext zu diesem Bereich fehlt noch. -->
