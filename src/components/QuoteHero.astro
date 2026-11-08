@@ -7,28 +7,9 @@ const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
 
 <section class="hero" aria-label="Ein Gedanke für zwischendurch">
 	<GradientVisual class="hero-visual" />
-	‚
 	<blockquote class="quote" data-quotes={JSON.stringify(quotes)}>
 		<p data-quote-text>{quotes[0]}</p>
 	</blockquote>
-	<button type="button" class="shuffle" data-quote-shuffle hidden>
-		<svg
-			viewBox="0 0 16 16"
-			width="16"
-			height="16"
-			aria-hidden="true"
-			focusable="false"
-		>
-			<path
-				d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.5"
-				stroke-linecap="round"
-				stroke-linejoin="round"></path>
-		</svg>
-		lieber ein anderer Gedanke?
-	</button>
 </section>
 
 <style>
@@ -36,8 +17,6 @@ const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
 		position: relative;
 		isolation: isolate;
 		display: grid;
-		grid-template-rows: auto 1fr auto;
-		gap: var(--space-m);
 		min-height: calc(100svh - var(--space-xl) - var(--space-l));
 		padding: clamp(var(--space-m), 4vw, var(--space-l));
 		overflow: hidden;
@@ -57,7 +36,7 @@ const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
 
 	.quote {
 		align-self: end;
-		max-width: 14ch;
+		max-width: var(--measure-quote);
 		margin: 0;
 		font-family: var(--font-display);
 		font-size: var(--text-hero);
@@ -70,107 +49,125 @@ const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
 		margin: 0;
 	}
 
-	/* Words are created by the script below, so they carry no scope attribute. */
-	.quote :global(.word) {
-		display: inline-block;
+	/* The spans below are created by the script, so they carry no scope attribute. */
+
+	/* The untyped rest stays in the layout so lines wrap as in the finished
+	   quote and the block does not grow while typing. */
+	.quote :global(.rest) {
+		opacity: 0;
 	}
 
-	@media (prefers-reduced-motion: no-preference) {
-		.quote p {
-			animation: rise var(--duration-m) var(--ease-out) both;
-		}
-
-		.quote :global(.word) {
-			animation: rise var(--duration-m) var(--ease-out) both;
-			animation-delay: calc(var(--word-index) * 70ms);
-		}
+	/* The negative margin keeps the caret from shifting the following text. */
+	.quote :global(.caret) {
+		margin-inline-end: calc(var(--underline-thickness) * -1);
+		border-inline-start: var(--underline-thickness) solid;
+		animation: blink calc(var(--duration-m) * 2) steps(1) infinite;
 	}
 
-	@keyframes rise {
-		from {
+	.quote :global(.caret.is-typing) {
+		animation: none;
+	}
+
+	@keyframes blink {
+		50% {
 			opacity: 0;
-			filter: blur(0.15em);
-			transform: translateY(0.25em);
 		}
-	}
-
-	.shuffle {
-		display: inline-flex;
-		gap: var(--space-xs);
-		align-items: center;
-		justify-self: start;
-		padding: var(--space-xs) var(--space-s);
-		border: 0;
-		border-radius: var(--radius-full);
-		background-color: var(--color-on-gradient);
-		color: var(--gradient-2);
-		font: inherit;
-		font-size: var(--text-s);
-		font-weight: 600;
-		cursor: pointer;
-	}
-
-	/* The display above would otherwise defeat the hidden attribute. */
-	.shuffle[hidden] {
-		display: none;
-	}
-
-	.shuffle svg {
-		transition: transform var(--duration-m) var(--ease-out);
-	}
-
-	.shuffle:hover svg {
-		transform: rotate(180deg);
-	}
-
-	.shuffle:focus-visible {
-		outline-color: var(--color-on-gradient);
 	}
 </style>
 
 <script>
-	function shuffled<T>(items: readonly T[]): T[] {
-		const result = [...items];
-		for (let i = result.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[result[i], result[j]] = [result[j], result[i]];
+	// Typing rhythm in ms. The jitter and the pause after punctuation keep it
+	// from looking mechanical.
+	const START_DELAY = 400;
+	const TYPE_INTERVAL = 70;
+	const TYPE_JITTER = 40;
+	const PUNCTUATION_PAUSE = 250;
+	const ERASE_INTERVAL = 35;
+	const RETYPE_DELAY = 400;
+	// Long enough to read a short quote twice before it is replaced.
+	const HOLD_DURATION = 3000;
+
+	const wait = (ms: number) =>
+		new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+	const pick = (items: readonly string[]): string | undefined =>
+		items[Math.floor(Math.random() * items.length)];
+
+	const typingDelay = (char: string) =>
+		TYPE_INTERVAL +
+		(Math.random() - 0.5) * TYPE_JITTER +
+		(/[.,!?]/.test(char) ? PUNCTUATION_PAUSE : 0);
+
+	function createSpan(className?: string): HTMLSpanElement {
+		const span = document.createElement('span');
+		if (className) {
+			span.className = className;
 		}
-		return result;
+		return span;
+	}
+
+	async function animate(
+		text: HTMLElement,
+		first: string,
+		second: string | undefined,
+	) {
+		const typed = createSpan();
+		const caret = createSpan('caret');
+		const rest = createSpan('rest');
+		caret.setAttribute('aria-hidden', 'true');
+
+		const render = (value: string, length: number) => {
+			typed.textContent = value.slice(0, length);
+			rest.textContent = value.slice(length);
+		};
+
+		const type = async (value: string) => {
+			caret.classList.add('is-typing');
+			for (let length = 1; length <= value.length; length++) {
+				render(value, length);
+				await wait(typingDelay(value.charAt(length - 1)));
+			}
+			caret.classList.remove('is-typing');
+		};
+
+		const erase = async (value: string) => {
+			caret.classList.add('is-typing');
+			for (let length = value.length - 1; length >= 0; length--) {
+				render(value, length);
+				await wait(ERASE_INTERVAL);
+			}
+		};
+
+		render(first, 0);
+		text.replaceChildren(typed, caret, rest);
+
+		await wait(START_DELAY);
+		await type(first);
+		if (second) {
+			await wait(HOLD_DURATION);
+			await erase(first);
+			render(second, 0);
+			await wait(RETYPE_DELAY);
+			await type(second);
+		}
+		// A caret blinking indefinitely would fail WCAG 2.2.2.
+		caret.remove();
 	}
 
 	const quote = document.querySelector<HTMLElement>('[data-quotes]');
 	const text = quote?.querySelector<HTMLElement>('[data-quote-text]');
-	const button = document.querySelector<HTMLButtonElement>(
-		'[data-quote-shuffle]',
-	);
+	const quotes: string[] = JSON.parse(quote?.dataset.quotes ?? '[]');
+	const first = pick(quotes);
+	const second = pick(quotes.filter((value) => value !== first));
 
-	if (quote && text && button) {
-		const quotes: string[] = JSON.parse(quote.dataset.quotes ?? '[]');
-		// A shuffled deck shows every quote once before any repeats.
-		let deck = shuffled(quotes);
-		let current = '';
-
-		const showNext = () => {
-			if (deck.length === 0) {
-				deck = shuffled(quotes.filter((value) => value !== current));
+	if (text && first) {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			text.textContent = first;
+			if (second) {
+				setTimeout(() => (text.textContent = second), HOLD_DURATION);
 			}
-			current = deck.pop() ?? current;
-			const words = current.split(' ').map((word, index) => {
-				const span = document.createElement('span');
-				span.className = 'word';
-				span.style.setProperty('--word-index', String(index));
-				span.textContent = word;
-				return span;
-			});
-			text.replaceChildren(
-				...words.flatMap((word, index) => (index === 0 ? [word] : [' ', word])),
-			);
-		};
-
-		showNext();
-		// Set after the first quote so the initial swap is not announced as a change.
-		text.setAttribute('aria-live', 'polite');
-		button.hidden = false;
-		button.addEventListener('click', showNext);
+		} else {
+			void animate(text, first, second);
+		}
 	}
 </script>
