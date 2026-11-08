@@ -4,10 +4,10 @@ order: 8
 focus:
   - Einrichtung und Wartung
   - Custom Post Types
-  - Plugins
+  - Plugin-Auswahl und -Pflege
   - Custom Themes
   - Support für Redakteur*innen
-  - DSGVO-freundliche Konzepte
+  - Datenschutzfreundliche Konzepte
 tools:
   - WordPress
   - Elementor

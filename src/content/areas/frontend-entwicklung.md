@@ -1,22 +1,25 @@
 ---
 title: Frontend-Entwicklung
-order: 1
+order: 2
 focus:
   - UI-Komponenten
   - Layout und Designsysteme
+  - Theming und Design-Tokens
   - State und Signals
   - Routing
   - Formulare
+  - Auth, Guards und Interceptors
   - Interaktivität und Animationen
-  - Barrierefreiheit
-  - Typographie
+  - Barrierefreiheit (WCAG 2.1 AA)
+  - Datenschutz im Frontend
+  - Typografie
 tools:
-  - VS Code
   - Angular
   - React
   - Next.js
   - TypeScript
   - JavaScript
+  - RxJS
   - HTML
   - CSS
   - Sass/SCSS
@@ -24,6 +27,7 @@ tools:
   - Bootstrap
   - Tailwind
   - Astro
+  - VS Code
 ---
 
 <!-- Prosatext zu diesem Bereich fehlt noch. -->

@@ -9,7 +9,6 @@ focus:
 tools:
   - Figma
   - Affinity
-  - Adobe XD
 ---
 
 <!-- Prosatext zu diesem Bereich fehlt noch. -->

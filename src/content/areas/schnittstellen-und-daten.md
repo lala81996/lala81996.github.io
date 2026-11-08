@@ -7,12 +7,12 @@ focus:
   - Abstimmung zwischen Backend und Frontend
   - Datenbank-Konzepte
   - Datenbankabfragen und -auswertung
-  - Lesen von Java-Spring-Boot-Projekten
+  - Spring-Boot-Projekte lesen und lokal starten
 tools:
   - SQL
   - MySQL Workbench
   - IntelliJ
-  - Eclipse
+  - Maven
 ---
 
 <!-- Prosatext zu diesem Bereich fehlt noch. -->

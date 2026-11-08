@@ -1,26 +1,26 @@
 ---
 title: Architektur und Code-Qualität
-order: 2
+order: 3
 focus:
-  - Dependency-Planung
-  - Repoarchitektur
+  - Dependencies, Updates und Sicherheitslücken
+  - Repo- und Ordnerstruktur
+  - Komponentenschnitt
   - Refactoring
   - Bestandscode-Optimierung
   - Review-Prozesse
   - Linting
   - Formatierung
   - Clean Code
-  - Crossplattform- und Cross-Browser-Tests
-  - KI-automatisierte Test-Setups
+  - Cross-Plattform- und Cross-Browser-Tests
 tools:
   - Angular CLI
   - Git
   - GitHub
   - GitLab
   - ESLint
+  - Stylelint
   - Prettier
   - Vitest
-  - Karma
   - Nx
   - Lighthouse
   - DevTools

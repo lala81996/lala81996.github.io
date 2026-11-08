@@ -3,7 +3,7 @@ title: Betrieb und Hosting
 order: 6
 focus:
   - Domain- und DNS-Verwaltung
-  - Automatisierung
+  - CI/CD
   - Hosting
   - Backup-Strategie
   - Wartung
@@ -13,10 +13,12 @@ tools:
   - WSL
   - Bash
   - PowerShell
+  - GitHub Actions
+  - GitLab CI
   - nginx
   - Apache
   - FTP/SSH
-  - IONOS Managed Instances
+  - IONOS Managed Server
   - Homebrew
 ---
 
