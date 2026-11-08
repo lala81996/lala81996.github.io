@@ -1,6 +1,6 @@
 /* Layered rules lose against unlayered ones, so Astro's scoped component styles
    override anything here without needing specificity tricks. */
-@layer base;
+@layer base, utilities;
 
 @layer base {
 	:root {
@@ -10,6 +10,24 @@
 		--color-text: light-dark(#0b1118, #eeeeee);
 		--color-accent: light-dark(#398ffd, #d19cff);
 		--color-shaded-accent: light-dark(#6391ce, #dfbdfd);
+		--color-text-muted: color-mix(
+			in oklab,
+			var(--color-text) 72%,
+			var(--color-surface)
+		);
+		--color-line: color-mix(
+			in oklab,
+			var(--color-text) 18%,
+			var(--color-surface)
+		);
+		--color-surface-raised: color-mix(
+			in oklab,
+			var(--color-text) 5%,
+			var(--color-surface)
+		);
+		/* Ink on the brand gradient in both schemes, equal to the dark surface. The shader's
+		   darkest blends drop to about 4.3:1, so small text needs a solid backing. */
+		--color-on-gradient: #0b1118;
 
 		/* Brand gradient, identical in both schemes. Keep the #rrggbb and deg formats:
 		   src/lib/gradient-shader.ts parses them. public/favicon.svg copies the values. */
@@ -18,14 +36,50 @@
 		--gradient-3: #ff5a63;
 		--gradient-4: #398ffd;
 		--gradient-angle: 160deg;
+		--gradient-brand: linear-gradient(
+			var(--gradient-angle),
+			var(--gradient-1),
+			var(--gradient-2),
+			var(--gradient-3),
+			var(--gradient-4)
+		);
 
+		--space-xs: 0.5rem;
+		--space-s: 1rem;
+		--space-m: 1.5rem;
 		--space-l: 3rem;
+		--space-xl: clamp(4rem, 2rem + 5vw, 7rem);
+		--space-2xl: clamp(6rem, 3rem + 8vw, 12rem);
+		--radius-s: 0.25rem;
 		--radius-l: 1.5rem;
+		--radius-xl: clamp(1.5rem, 0.75rem + 2.5vw, 3rem);
+		--radius-full: 999rem;
 		--visual-max-width: 32rem;
+		--content-max-width: 80rem;
+		--measure: 40rem;
+		--measure-heading: 18ch;
+		--measure-quote: 14ch;
+		--border-hairline: 1px;
+		--underline-thickness: 0.12em;
+		--mark-size: 1.75rem;
 
 		--font-body: system-ui, sans-serif;
 		/* Placeholder until a self-hosted display typeface is chosen. */
 		--font-display: var(--font-body);
+
+		--text-s: 0.875rem;
+		--text-m: 1.125rem;
+		--text-l: clamp(1.375rem, 1rem + 1.25vw, 2rem);
+		--text-xl: clamp(2.25rem, 1.25rem + 3.5vw, 4.5rem);
+		--text-hero: clamp(3.25rem, 0.75rem + 9vw, 10rem);
+		--tracking-tight: -0.045em;
+		--tracking-wide: 0.14em;
+		--leading-tight: 0.95;
+		--leading-snug: 1.1;
+
+		--duration-m: 0.6s;
+		--stagger: 70ms;
+		--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	/* light-dark() resolves against the inherited color-scheme, so overriding it
@@ -46,7 +100,7 @@
 
 	body {
 		margin: 0;
-		padding: 1.5rem;
+		padding: var(--space-m);
 		background-color: var(--color-surface);
 		color: var(--color-text);
 		font-family: var(--font-body);
@@ -82,5 +136,76 @@
 	:focus-visible {
 		outline: 2px solid var(--color-accent);
 		outline-offset: 2px;
+	}
+}
+
+@layer utilities {
+	.container {
+		width: 100%;
+		max-width: var(--content-max-width);
+		margin-inline: auto;
+	}
+
+	.eyebrow {
+		margin: 0;
+		font-size: var(--text-s);
+		font-weight: 600;
+		letter-spacing: var(--tracking-wide);
+		text-transform: uppercase;
+	}
+
+	.display {
+		font-family: var(--font-display);
+		font-weight: 600;
+		letter-spacing: var(--tracking-tight);
+	}
+
+	/* Thin underline at rest; on hover the brand gradient fills the line height. */
+	.link {
+		padding-inline: 0.1em;
+		background:
+			var(--gradient-brand) no-repeat 0 100% / 100% 0,
+			linear-gradient(currentColor, currentColor) no-repeat 0 100% / 100%
+				var(--underline-thickness);
+		color: inherit;
+		box-decoration-break: clone;
+		transition:
+			background-size var(--duration-m) var(--ease-out),
+			color var(--duration-m) var(--ease-out);
+	}
+
+	.link:hover,
+	.link:focus-visible {
+		background-size:
+			100% 100%,
+			100% var(--underline-thickness);
+		color: var(--color-on-gradient);
+	}
+
+	.highlight {
+		padding-inline: 0.15em;
+		border-radius: var(--radius-s);
+		background: var(--gradient-brand) no-repeat 0 0 / 100% 100%;
+		color: var(--color-on-gradient);
+		font-weight: 600;
+		box-decoration-break: clone;
+	}
+
+	/* Browsers without scroll-driven animations show the finished marker right away. */
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.highlight {
+				animation: highlight-draw linear both;
+				animation-timeline: view();
+				animation-range: entry 100% cover 45%;
+			}
+		}
+	}
+
+	@keyframes highlight-draw {
+		from {
+			background-size: 0% 100%;
+			color: var(--color-text);
+		}
 	}
 }

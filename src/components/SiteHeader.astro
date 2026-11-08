@@ -1,0 +1,44 @@
+---
+
+---
+
+<header class="site-header">
+	<a href="/" class="brand display">
+		<img src="/favicon.svg" alt="" width="28" height="28" />
+		laura burkhardt • leipzig, DE
+	</a>
+	<span class="eyebrow status">Portfolio</span>
+</header>
+
+<style>
+	.site-header {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs) var(--space-m);
+		align-items: center;
+		justify-content: space-between;
+		margin-block-end: var(--space-m);
+	}
+
+	.brand {
+		display: inline-flex;
+		gap: var(--space-xs);
+		align-items: center;
+		color: var(--color-text);
+		font-size: var(--text-m);
+		font-weight: 700;
+	}
+
+	.brand:hover {
+		color: var(--color-text);
+	}
+
+	.brand img {
+		width: var(--mark-size);
+		height: var(--mark-size);
+	}
+
+	.status {
+		color: var(--color-text-muted);
+	}
+</style>

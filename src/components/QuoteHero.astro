@@ -1,0 +1,176 @@
+---
+import { getCollection } from 'astro:content';
+import GradientVisual from './GradientVisual.astro';
+
+const quotes = (await getCollection('zitate')).map((entry) => entry.data.text);
+---
+
+<section class="hero" aria-label="Ein Gedanke für zwischendurch">
+	<GradientVisual class="hero-visual" />
+	‚
+	<blockquote class="quote" data-quotes={JSON.stringify(quotes)}>
+		<p data-quote-text>{quotes[0]}</p>
+	</blockquote>
+	<button type="button" class="shuffle" data-quote-shuffle hidden>
+		<svg
+			viewBox="0 0 16 16"
+			width="16"
+			height="16"
+			aria-hidden="true"
+			focusable="false"
+		>
+			<path
+				d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="round"
+				stroke-linejoin="round"></path>
+		</svg>
+		lieber ein anderer Gedanke?
+	</button>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		isolation: isolate;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		gap: var(--space-m);
+		min-height: calc(100svh - var(--space-xl) - var(--space-l));
+		padding: clamp(var(--space-m), 4vw, var(--space-l));
+		overflow: hidden;
+		border-radius: var(--radius-xl);
+		color: var(--color-on-gradient);
+	}
+
+	/* Two classes beat the single-class sizing rules inside GradientVisual. */
+	.hero .hero-visual {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		max-width: none;
+		aspect-ratio: auto;
+		border-radius: 0;
+	}
+
+	.quote {
+		align-self: end;
+		max-width: 14ch;
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: var(--text-hero);
+		font-weight: 600;
+		line-height: var(--leading-tight);
+		letter-spacing: var(--tracking-tight);
+	}
+
+	.quote p {
+		margin: 0;
+	}
+
+	/* Words are created by the script below, so they carry no scope attribute. */
+	.quote :global(.word) {
+		display: inline-block;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.quote p {
+			animation: rise var(--duration-m) var(--ease-out) both;
+		}
+
+		.quote :global(.word) {
+			animation: rise var(--duration-m) var(--ease-out) both;
+			animation-delay: calc(var(--word-index) * 70ms);
+		}
+	}
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			filter: blur(0.15em);
+			transform: translateY(0.25em);
+		}
+	}
+
+	.shuffle {
+		display: inline-flex;
+		gap: var(--space-xs);
+		align-items: center;
+		justify-self: start;
+		padding: var(--space-xs) var(--space-s);
+		border: 0;
+		border-radius: var(--radius-full);
+		background-color: var(--color-on-gradient);
+		color: var(--gradient-2);
+		font: inherit;
+		font-size: var(--text-s);
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	/* The display above would otherwise defeat the hidden attribute. */
+	.shuffle[hidden] {
+		display: none;
+	}
+
+	.shuffle svg {
+		transition: transform var(--duration-m) var(--ease-out);
+	}
+
+	.shuffle:hover svg {
+		transform: rotate(180deg);
+	}
+
+	.shuffle:focus-visible {
+		outline-color: var(--color-on-gradient);
+	}
+</style>
+
+<script>
+	function shuffled<T>(items: readonly T[]): T[] {
+		const result = [...items];
+		for (let i = result.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[result[i], result[j]] = [result[j], result[i]];
+		}
+		return result;
+	}
+
+	const quote = document.querySelector<HTMLElement>('[data-quotes]');
+	const text = quote?.querySelector<HTMLElement>('[data-quote-text]');
+	const button = document.querySelector<HTMLButtonElement>(
+		'[data-quote-shuffle]',
+	);
+
+	if (quote && text && button) {
+		const quotes: string[] = JSON.parse(quote.dataset.quotes ?? '[]');
+		// A shuffled deck shows every quote once before any repeats.
+		let deck = shuffled(quotes);
+		let current = '';
+
+		const showNext = () => {
+			if (deck.length === 0) {
+				deck = shuffled(quotes.filter((value) => value !== current));
+			}
+			current = deck.pop() ?? current;
+			const words = current.split(' ').map((word, index) => {
+				const span = document.createElement('span');
+				span.className = 'word';
+				span.style.setProperty('--word-index', String(index));
+				span.textContent = word;
+				return span;
+			});
+			text.replaceChildren(
+				...words.flatMap((word, index) => (index === 0 ? [word] : [' ', word])),
+			);
+		};
+
+		showNext();
+		// Set after the first quote so the initial swap is not announced as a change.
+		text.setAttribute('aria-live', 'polite');
+		button.hidden = false;
+		button.addEventListener('click', showNext);
+	}
+</script>

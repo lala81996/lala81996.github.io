@@ -1,4 +1,5 @@
 ---
+import SiteHeader from '../components/SiteHeader.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import '../styles/base.css';
 
@@ -30,7 +31,10 @@ const { title } = Astro.props;
 		</script>
 	</head>
 	<body>
-		<slot />
+		<SiteHeader />
+		<main>
+			<slot />
+		</main>
 		<ThemeToggle />
 	</body>
 </html>

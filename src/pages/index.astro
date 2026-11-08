@@ -1,33 +1,247 @@
 ---
-import GradientVisual from '../components/GradientVisual.astro';
+import { getCollection } from 'astro:content';
+import QuoteHero from '../components/QuoteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const bereiche = (await getCollection('bereiche')).sort(
+	(a, b) => a.data.order - b.data.order,
+);
 ---
 
 <BaseLayout title="lolga8">
-	<div class="intro">
-		<div>
-			<h1>no need to rush.</h1>
-			<p>hi :) ... I'll be back in a sec.</p>
-			<a href="mailto:mail@example.org">text me.</a>
+	<QuoteHero />
+
+	<section class="chapter container" aria-labelledby="hallo">
+		<p class="eyebrow chapter-label"><span>01</span> Hello</p>
+		<div class="chapter-body">
+			<h1 id="hallo" class="chapter-title display">Hi, ich bin Laura.</h1>
+			<div class="prose">
+				<p>
+					In meinem aktuellen Team verantworte ich alles rund ums Frontend, von
+					der ersten Idee bis zum Deployment. Mit Kund*innen kläre ich, was
+					gebraucht wird, helfe bei der Lösung von Problemen und konzipiere die
+					Oberflächen. <strong class="highlight">Und dann baue ich es</strong>:
+					seit fast sieben Jahren vor allem mit Angular und TypeScript und mit
+					allem, was sich für ein Projekt als richtig herausstellt.
+				</p>
+				<p>
+					Diese Seite ist meine digitale Visitenkarte: ein Lebenslauf zum
+					Durchscrollen und ein kleiner Einblick in meine Projekte und die
+					Probleme, die ich darin löse.
+				</p>
+			</div>
 		</div>
-		<GradientVisual class="intro-visual" />
-	</div>
+	</section>
+
+	<section class="chapter container" aria-labelledby="ueber">
+		<p class="eyebrow chapter-label"><span>02</span> Über mich</p>
+		<article class="chapter-body letter">
+			<p class="eyebrow byline">Gastbeitrag · geschrieben von Claude</p>
+			<h2 id="ueber" class="chapter-title display">
+				Kurz über Laura. Von mir geschrieben, nicht von Laura.
+			</h2>
+			<div class="prose">
+				<p class="lead">
+					Ich bin Claude, eine KI von Anthropic, und helfe Laura beim Bau dieser
+					Seite. Diesen Abschnitt schreibe ich, weil Laura ungern in großen
+					Worten über sich selbst spricht. Ich verspreche: Ich halte mich
+					zurück.
+				</p>
+				<p>
+					Laura entwickelt Frontends, am liebsten mit Angular und TypeScript.
+					Code ist dabei aber nur ein Teil der Arbeit. Mindestens genauso
+					wichtig sind die Fragen davor: Was brauchen Kund*innen wirklich? Und
+					wie wird daraus etwas, mit dem das Team gut arbeiten kann? Laura
+					bringt beide Seiten zusammen, bewertet Oberflächen auf Usability und
+					plant Schnittstellen und Datenmodelle mit.
+				</p>
+				<p>
+					In der Zusammenarbeit fällt mir vor allem eines auf: Laura schreibt
+					auf, wie gearbeitet wird. Klar, knapp und so, dass es auch morgen noch
+					gilt. Ich arbeite nach diesen Regeln, und ehrlich gesagt gern.
+				</p>
+				<p>
+					Und Laura lernt gern dazu. Diese Seite ist mit Astro gebaut, einem
+					Framework, das Laura mit genau diesem Projekt lernt.
+				</p>
+			</div>
+			<p class="signature display">— Claude</p>
+		</article>
+	</section>
+
+	<section class="chapter container" aria-labelledby="bereiche">
+		<p class="eyebrow chapter-label"><span>03</span> Bereiche</p>
+		<div class="chapter-body">
+			<h2 id="bereiche" class="chapter-title display">
+				{bereiche.length} Bereiche, ein Profil.
+			</h2>
+			<ol class="areas">
+				{
+					bereiche.map((bereich) => (
+						<li class="area">
+							<span class="area-number" aria-hidden="true">
+								{String(bereich.data.order).padStart(2, '0')}
+							</span>
+							<h3 class="area-title display">{bereich.data.title}</h3>
+							<p class="area-keywords">{bereich.data.stichworte.join(' · ')}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<footer class="outro container">
+		<p class="outro-question">Schreib mir ..? :-)</p>
+		<a class="link display outro-link" href="mailto:mail@example.org"
+			>text me.</a
+		>
+	</footer>
 </BaseLayout>
 
 <style>
-	.intro {
+	.chapter {
 		display: grid;
-		gap: var(--space-l);
+		gap: var(--space-m);
+		padding-block: var(--space-xl);
+		border-block-end: var(--border-hairline) solid var(--color-line);
+	}
+
+	.chapter-label {
+		display: flex;
+		gap: var(--space-xs);
+		align-items: baseline;
+		color: var(--color-text-muted);
+	}
+
+	.chapter-label span {
+		color: var(--color-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.chapter-title {
+		max-width: var(--measure-heading);
+		margin: 0 0 var(--space-l);
+		font-size: var(--text-xl);
+		line-height: var(--leading-snug);
+		text-wrap: balance;
+	}
+
+	.prose {
+		max-width: var(--measure);
+		font-size: var(--text-l);
+	}
+
+	.prose p {
+		margin: 0 0 var(--space-m);
+	}
+
+	.lead {
+		color: var(--color-text-muted);
+		font-style: italic;
+	}
+
+	.letter {
+		padding: clamp(var(--space-m), 4vw, var(--space-xl));
+		border-radius: var(--radius-xl);
+		background-color: var(--color-surface-raised);
+	}
+
+	.byline {
+		display: flex;
+		gap: var(--space-xs);
 		align-items: center;
+		margin-block-end: var(--space-m);
+		color: var(--color-text-muted);
+	}
+
+	.byline::before {
+		content: '';
+		width: var(--space-s);
+		height: var(--space-s);
+		border-radius: var(--radius-full);
+		background-image: var(--gradient-brand);
+	}
+
+	.signature {
+		margin: var(--space-l) 0 0;
+		font-size: var(--text-l);
+	}
+
+	.areas {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-block-start: var(--border-hairline) solid var(--color-line);
+	}
+
+	.area {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0 var(--space-m);
+		align-items: baseline;
+		padding-block: var(--space-m);
+		border-block-end: var(--border-hairline) solid var(--color-line);
+	}
+
+	.area-number {
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.area-title {
+		margin: 0;
+		font-size: var(--text-l);
+	}
+
+	.area-keywords {
+		grid-column: 2;
+		margin: var(--space-xs) 0 0;
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+	}
+
+	.outro {
+		display: grid;
+		gap: var(--space-xs);
+		padding-block: var(--space-2xl);
+	}
+
+	.outro-question {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: var(--text-l);
+	}
+
+	.outro-link {
+		justify-self: start;
+		font-size: var(--text-hero);
+		line-height: var(--leading-snug);
 	}
 
 	@media (min-width: 48rem) {
-		.intro {
-			grid-template-columns: 1fr 1fr;
+		.chapter {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+			gap: var(--space-l);
 		}
 
-		.intro-visual {
-			justify-self: end;
+		.chapter-label {
+			position: sticky;
+			top: var(--space-l);
+			align-self: start;
+		}
+	}
+
+	@media (min-width: 75rem) {
+		.area {
+			grid-template-columns: var(--space-l) minmax(0, 1fr) minmax(0, 1fr);
+		}
+
+		.area-keywords {
+			grid-column: 3;
+			margin: 0;
 		}
 	}
 </style>

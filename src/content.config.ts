@@ -1,5 +1,5 @@
 import { defineCollection, reference } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const bereiche = defineCollection({
@@ -33,4 +33,11 @@ const projekte = defineCollection({
 	}),
 });
 
-export const collections = { bereiche, projekte };
+const zitate = defineCollection({
+	loader: file('src/content/zitate.json'),
+	schema: z.object({
+		text: z.string(),
+	}),
+});
+
+export const collections = { bereiche, projekte, zitate };
