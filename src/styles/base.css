@@ -62,6 +62,7 @@
 		--border-hairline: 1px;
 		--underline-thickness: 0.12em;
 		--mark-size: 1.75rem;
+		--control-size: 2.75rem;
 
 		--font-body: system-ui, sans-serif;
 		/* Placeholder until a self-hosted display typeface is chosen. */
@@ -180,6 +181,33 @@
 			100% 100%,
 			100% var(--underline-thickness);
 		color: var(--color-on-gradient);
+	}
+
+	.icon-button {
+		display: grid;
+		flex-shrink: 0;
+		place-items: center;
+		width: var(--control-size);
+		height: var(--control-size);
+		padding: 0;
+		border: var(--border-hairline) solid var(--color-accent);
+		border-radius: var(--radius-full);
+		background-color: transparent;
+		color: var(--color-accent);
+		cursor: pointer;
+	}
+
+	/* Without this the display above would defeat the hidden attribute. */
+	.icon-button[hidden] {
+		display: none;
+	}
+
+	/* Touch devices keep :hover after a tap, which would leave the button filled. */
+	@media (hover: hover) {
+		.icon-button:hover {
+			background-color: var(--color-accent);
+			color: var(--color-surface);
+		}
 	}
 
 	.highlight {

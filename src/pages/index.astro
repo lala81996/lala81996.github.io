@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import CopyButton from '../components/CopyButton.astro';
 import QuoteHero from '../components/QuoteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -75,12 +76,22 @@ const areas = (await getCollection('areas')).sort(
 		</div>
 	</section>
 
-	<footer class="outro container">
-		<p class="outro-question">Schreib mir ..? :-)</p>
-		<a class="link display outro-link" href="mailto:mail@example.org"
-			>text me.</a
-		>
-	</footer>
+	<section class="chapter container contact" aria-labelledby="kontakt">
+		<p class="eyebrow chapter-label"><span>03</span> Kontakt</p>
+		<div class="chapter-body">
+			<h2 id="kontakt" class="chapter-title display">
+				Schreib mir mal wieder.
+			</h2>
+			<div class="contact-row">
+				<a class="link contact-link" href="mailto:hello@lolga8.com"
+					>hello@lolga8.com<span class="contact-arrow" aria-hidden="true"
+						>→</span
+					></a
+				>
+				<CopyButton value="hello@lolga8.com" label="E-Mail-Adresse kopieren" />
+			</div>
+		</div>
+	</section>
 </BaseLayout>
 
 <style>
@@ -170,22 +181,39 @@ const areas = (await getCollection('areas')).sort(
 		margin-block-start: var(--space-s);
 	}
 
-	.outro {
-		display: grid;
-		gap: var(--space-xs);
-		padding-block: var(--space-2xl);
+	.contact {
+		padding-block-end: var(--space-2xl);
+		border-block-end: none;
 	}
 
-	.outro-question {
-		margin: 0;
-		color: var(--color-text-muted);
+	.contact-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-s);
+		align-items: center;
+	}
+
+	.contact-link {
 		font-size: var(--text-l);
+		font-weight: 600;
 	}
 
-	.outro-link {
-		justify-self: start;
-		font-size: var(--text-hero);
-		line-height: var(--leading-snug);
+	/* The end margin keeps room for the hover shift inside the link box, so the
+	   arrow never leaves the gradient fill. */
+	.contact-arrow {
+		display: inline-block;
+		margin-inline: var(--space-xs);
+	}
+
+	.contact-link:hover .contact-arrow,
+	.contact-link:focus-visible .contact-arrow {
+		translate: var(--space-xs) 0;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.contact-arrow {
+			transition: translate var(--duration-m) var(--ease-out);
+		}
 	}
 
 	@media (min-width: 48rem) {

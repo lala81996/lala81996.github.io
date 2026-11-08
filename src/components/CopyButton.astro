@@ -1,0 +1,95 @@
+---
+interface Props {
+	value: string;
+	label: string;
+}
+
+const { value, label } = Astro.props;
+---
+
+<span class="copy">
+	<button
+		type="button"
+		class="icon-button"
+		aria-label={label}
+		data-copy={value}
+		hidden
+	>
+		<svg
+			viewBox="0 0 16 16"
+			width="16"
+			height="16"
+			aria-hidden="true"
+			focusable="false"
+		>
+			<rect
+				x="5.25"
+				y="5.25"
+				width="9"
+				height="9"
+				rx="1.5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"></rect>
+			<path
+				d="M10.75 2.75v-.5a1.5 1.5 0 0 0-1.5-1.5h-6a1.5 1.5 0 0 0-1.5 1.5v6a1.5 1.5 0 0 0 1.5 1.5h.5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"></path>
+		</svg>
+	</button>
+	<span class="copy-status" role="status"></span>
+</span>
+
+<style>
+	.copy {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.copy-status {
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+	}
+
+	/* Spaced only while filled, so the empty live region adds no trailing gap. */
+	.copy-status:not(:empty) {
+		margin-inline-start: var(--space-xs);
+	}
+</style>
+
+<script>
+	const STATUS_DURATION_MS = 2000;
+
+	for (const button of document.querySelectorAll<HTMLButtonElement>(
+		'button[data-copy]',
+	)) {
+		const status = button.closest('.copy')?.querySelector('.copy-status');
+		let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+		// The button does nothing without scripting, so the markup ships it hidden.
+		button.hidden = false;
+
+		button.addEventListener('click', async () => {
+			let message = 'Kopiert';
+			try {
+				await navigator.clipboard.writeText(button.dataset.copy ?? '');
+			} catch {
+				message = 'Kopieren nicht möglich';
+			}
+
+			if (status) {
+				// Screen readers skip an unchanged text, so a repeated message is cleared
+				// first and set again a frame later to be announced once more.
+				status.textContent = '';
+				requestAnimationFrame(() => {
+					status.textContent = message;
+				});
+				clearTimeout(resetTimer);
+				resetTimer = setTimeout(() => {
+					status.textContent = '';
+				}, STATUS_DURATION_MS);
+			}
+		});
+	}
+</script>
