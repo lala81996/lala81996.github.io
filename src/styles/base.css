@@ -237,6 +237,17 @@
 		}
 	}
 
+	.divided-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-block-start: var(--border-hairline) solid var(--color-line);
+	}
+
+	.divided-list > li {
+		border-block-end: var(--border-hairline) solid var(--color-line);
+	}
+
 	/*
 	 * Items wrap as whole units. The separator sits inside each item so it never
 	 * starts a line, and its empty alt text keeps screen readers from announcing it.

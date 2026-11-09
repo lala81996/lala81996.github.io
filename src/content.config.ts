@@ -1,6 +1,7 @@
 import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { compareCvDates } from './lib/cv-date';
 
 const areas = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/areas' }),
@@ -41,4 +42,28 @@ const quotes = defineCollection({
 	}),
 });
 
-export const collections = { areas, projects, quotes };
+// CV dates come with mixed precision (some only a year), so they stay strings
+// instead of z.date(), which would invent a month or day.
+const yearOrMonth = z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/);
+
+const cv = defineCollection({
+	loader: file('src/content/cv.json'),
+	schema: z
+		.object({
+			group: z.enum(['work', 'education']),
+			title: z.string(),
+			organization: z.string(),
+			start: yearOrMonth,
+			// An absent value means the station is still running. Equal to start for a single point in time.
+			end: yearOrMonth.optional(),
+			details: z.array(z.string()).default([]),
+		})
+		.refine(
+			(station) =>
+				station.end === undefined ||
+				compareCvDates(station.end, station.start) >= 0,
+			{ message: 'end must not be before start', path: ['end'] },
+		),
+});
+
+export const collections = { areas, projects, quotes, cv };

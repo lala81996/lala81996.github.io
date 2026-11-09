@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import CopyButton from '../components/CopyButton.astro';
+import CvTimeline from '../components/CvTimeline.astro';
 import QuoteHero from '../components/QuoteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -42,7 +43,7 @@ const areas = (await getCollection('areas')).sort(
 				An diesen Themenfeldern arbeite ich. Zu jedem siehst du meine
 				Schwerpunkte und die Tools, mit denen ich dort regelmäßig arbeite.
 			</p>
-			<ol class="areas">
+			<ol class="divided-list">
 				{
 					areas.map((area) => (
 						<li class="area">
@@ -76,8 +77,16 @@ const areas = (await getCollection('areas')).sort(
 		</div>
 	</section>
 
+	<section class="chapter container" aria-labelledby="lebenslauf">
+		<p class="eyebrow chapter-label"><span>03</span> Lebenslauf</p>
+		<div class="chapter-body">
+			<h2 id="lebenslauf" class="chapter-title display">Wie ich hierherkam.</h2>
+			<CvTimeline />
+		</div>
+	</section>
+
 	<section class="chapter container contact" aria-labelledby="kontakt">
-		<p class="eyebrow chapter-label"><span>03</span> Kontakt</p>
+		<p class="eyebrow chapter-label"><span>04</span> Kontakt</p>
 		<div class="chapter-body">
 			<h2 id="kontakt" class="chapter-title display">
 				Schreib mir mal wieder.
@@ -138,20 +147,12 @@ const areas = (await getCollection('areas')).sort(
 		font-size: var(--text-m);
 	}
 
-	.areas {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		border-block-start: var(--border-hairline) solid var(--color-line);
-	}
-
 	.area {
 		display: grid;
 		grid-template-columns: auto 1fr;
 		gap: 0 var(--space-m);
 		align-items: baseline;
 		padding-block: var(--space-m);
-		border-block-end: var(--border-hairline) solid var(--color-line);
 	}
 
 	.area-number {

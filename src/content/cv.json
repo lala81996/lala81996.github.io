@@ -1,0 +1,57 @@
+[
+	{
+		"id": "frontend-developer",
+		"group": "work",
+		"title": "Frontend-Entwicklerin",
+		"organization": "Gesundheitsforen Leipzig GmbH",
+		"start": "2022-01"
+	},
+	{
+		"id": "working-student",
+		"group": "work",
+		"title": "Werkstudentin Softwareentwicklung, Frontend",
+		"organization": "Gesundheitsforen Leipzig GmbH",
+		"start": "2020-02",
+		"end": "2021-12"
+	},
+	{
+		"id": "purelights",
+		"group": "work",
+		"title": "Technische Beratung und Umsetzung des Webauftritts sowie IT-Infrastruktur",
+		"organization": "purelights – Freie Traureden Leipzig",
+		"start": "2021"
+	},
+	{
+		"id": "student-assistant",
+		"group": "work",
+		"title": "Studentische Hilfskraft",
+		"organization": "HTWK Leipzig, Fakultät Informatik und Medien",
+		"start": "2018",
+		"end": "2019",
+		"details": ["TYPO3-Contentpflege"]
+	},
+	{
+		"id": "media-technology",
+		"group": "education",
+		"title": "B.Eng. Medientechnik",
+		"organization": "HTWK Leipzig",
+		"start": "2017-10",
+		"end": "2021-12",
+		"details": [
+			"Abschlussarbeit: „Von Multi- zu Monorepository – Verwendung des Monorepository-Konzeptes bei der kollaborativen Entwicklung von Angular-Webapplikationen“"
+		]
+	},
+	{
+		"id": "erasmus",
+		"group": "education",
+		"title": "ERASMUS+ Auslandssemester",
+		"organization": "University of the West of Scotland, Paisley, UK",
+		"start": "2019-09",
+		"end": "2019-12",
+		"details": [
+			"Web Site Development",
+			"Dynamic Web Technologies",
+			"Creative Technologies Professionalism"
+		]
+	}
+]
