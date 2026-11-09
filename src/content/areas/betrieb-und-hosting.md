@@ -13,7 +13,6 @@ tools:
   - WSL
   - Bash
   - PowerShell
-  - GitHub Actions
   - GitLab CI
   - nginx
   - Apache
