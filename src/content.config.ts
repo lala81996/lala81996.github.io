@@ -50,7 +50,7 @@ const cv = defineCollection({
 	loader: file('src/content/cv.json'),
 	schema: z
 		.object({
-			group: z.enum(['work', 'education']),
+			group: z.enum(['work', 'engagement', 'education']),
 			title: z.string(),
 			organization: z.string(),
 			start: yearOrMonth,

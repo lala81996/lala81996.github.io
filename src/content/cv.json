@@ -4,7 +4,15 @@
 		"group": "work",
 		"title": "Frontend-Entwicklerin",
 		"organization": "Gesundheitsforen Leipzig GmbH",
-		"start": "2022-01"
+		"start": "2026-01"
+	},
+	{
+		"id": "junior-frontend-developer",
+		"group": "work",
+		"title": "Junior Frontend-Entwicklerin",
+		"organization": "Gesundheitsforen Leipzig GmbH",
+		"start": "2022-01",
+		"end": "2025-12"
 	},
 	{
 		"id": "working-student",
@@ -16,10 +24,17 @@
 	},
 	{
 		"id": "purelights",
-		"group": "work",
-		"title": "Technische Beratung und Umsetzung des Webauftritts sowie IT-Infrastruktur",
+		"group": "engagement",
+		"title": "Design und Umsetzung des Webauftritts, Betreuung der IT-Infrastruktur",
 		"organization": "purelights – Freie Traureden Leipzig",
-		"start": "2021"
+		"start": "2021",
+		"details": [
+			"Eigenes Design",
+			"WordPress mit Elementor",
+			"Domain und DNS",
+			"Hosting",
+			"Wartung"
+		]
 	},
 	{
 		"id": "student-assistant",
