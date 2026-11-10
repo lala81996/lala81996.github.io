@@ -2,11 +2,19 @@
 import { getCollection } from 'astro:content';
 import CopyButton from '../components/CopyButton.astro';
 import CvTimeline from '../components/CvTimeline.astro';
+import ProjectPanel from '../components/ProjectPanel.astro';
 import QuoteHero from '../components/QuoteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { comparePeriodsDesc } from '../lib/partial-date';
 
 const areas = (await getCollection('areas')).sort(
 	(a, b) => a.data.order - b.data.order,
+);
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) =>
+		comparePeriodsDesc(a.data, b.data) ||
+		a.data.title.localeCompare(b.data.title),
 );
 ---
 
@@ -39,19 +47,19 @@ const areas = (await getCollection('areas')).sort(
 		<p class="eyebrow chapter-label"><span>02</span> Bereiche</p>
 		<div class="chapter-body">
 			<h2 id="bereiche" class="chapter-title display">Was ich kann.</h2>
-			<p class="areas-hint">
+			<p class="chapter-hint">
 				An diesen Themenfeldern arbeite ich. Zu jedem siehst du meine
 				Schwerpunkte und die Tools, mit denen ich dort regelmäßig arbeite.
 			</p>
 			<ol class="divided-list">
 				{
 					areas.map((area) => (
-						<li class="area">
+						<li class="area" id={`bereich-${area.id}`}>
 							<span class="area-number" aria-hidden="true">
 								{String(area.data.order).padStart(2, '0')}
 							</span>
 							<h3 class="area-title display">{area.data.title}</h3>
-							<dl class="area-details">
+							<dl class="label-list area-details">
 								{[
 									{ label: 'Schwerpunkte', items: area.data.focus },
 									{ label: 'Tools', items: area.data.tools },
@@ -77,8 +85,27 @@ const areas = (await getCollection('areas')).sort(
 		</div>
 	</section>
 
+	<section class="chapter container" aria-labelledby="projekte">
+		<p class="eyebrow chapter-label"><span>03</span> Projekte</p>
+		<div class="chapter-body">
+			<h2 id="projekte" class="chapter-title display">
+				Woran ich gearbeitet habe.
+			</h2>
+			<p class="chapter-hint">
+				Über die Jahre habe ich an vielen Projekten und Produkten mitgearbeitet.
+				Die meisten gehören Kund*innen oder meinem Team, und deren
+				Vertraulichkeit ist mir wichtig. Deshalb zeige ich hier nur eine kleine
+				Auswahl. Wenn du mehr wissen willst,
+				<a class="link" href="#kontakt">schreib mir einfach</a>.
+			</p>
+			<div class="projects">
+				{projects.map((project) => <ProjectPanel project={project} />)}
+			</div>
+		</div>
+	</section>
+
 	<section class="chapter container" aria-labelledby="lebenslauf">
-		<p class="eyebrow chapter-label"><span>03</span> Lebenslauf</p>
+		<p class="eyebrow chapter-label"><span>04</span> Lebenslauf</p>
 		<div class="chapter-body">
 			<h2 id="lebenslauf" class="chapter-title display">Wie ich hierherkam.</h2>
 			<CvTimeline />
@@ -86,18 +113,28 @@ const areas = (await getCollection('areas')).sort(
 	</section>
 
 	<section class="chapter container contact" aria-labelledby="kontakt">
-		<p class="eyebrow chapter-label"><span>04</span> Kontakt</p>
+		<p class="eyebrow chapter-label"><span>05</span> Kontakt</p>
 		<div class="chapter-body">
 			<h2 id="kontakt" class="chapter-title display">
-				Schreib mir mal wieder.
+				Ich freue mich über Post.
 			</h2>
-			<div class="contact-row">
-				<a class="link contact-link" href="mailto:hello@lolga8.com"
-					>hello@lolga8.com<span class="contact-arrow" aria-hidden="true"
-						>→</span
-					></a
+			<div class="contact-links">
+				<div class="contact-row">
+					<a class="link contact-link" href="mailto:hello@lolga8.com"
+						>hello@lolga8.com<span class="link-arrow" aria-hidden="true">→</span
+						></a
+					>
+					<CopyButton
+						value="hello@lolga8.com"
+						label="E-Mail-Adresse kopieren"
+					/>
+				</div>
+				<a
+					class="link contact-link"
+					href="https://www.linkedin.com/in/laura-burkhardt-2a4199172/"
+					rel="me"
+					>LinkedIn<span class="link-arrow" aria-hidden="true">→</span></a
 				>
-				<CopyButton value="hello@lolga8.com" label="E-Mail-Adresse kopieren" />
 			</div>
 		</div>
 	</section>
@@ -140,7 +177,7 @@ const areas = (await getCollection('areas')).sort(
 		margin: 0 0 var(--space-m);
 	}
 
-	.areas-hint {
+	.chapter-hint {
 		max-width: var(--measure);
 		margin: 0 0 var(--space-m);
 		color: var(--color-text-muted);
@@ -169,22 +206,24 @@ const areas = (await getCollection('areas')).sort(
 
 	.area-details {
 		grid-column: 2;
-		margin: var(--space-xs) 0 0;
-		color: var(--color-text-muted);
-		font-size: var(--text-s);
+		margin-block-start: var(--space-xs);
 	}
 
-	.area-details dd {
-		margin: 0;
-	}
-
-	.area-details dd + dt {
-		margin-block-start: var(--space-s);
+	.projects {
+		display: grid;
+		gap: var(--space-l);
+		margin-block-start: var(--space-l);
 	}
 
 	.contact {
 		padding-block-end: var(--space-2xl);
 		border-block-end: none;
+	}
+
+	.contact-links {
+		display: grid;
+		gap: var(--space-m);
+		justify-items: start;
 	}
 
 	.contact-row {
@@ -199,25 +238,14 @@ const areas = (await getCollection('areas')).sort(
 		font-weight: 600;
 	}
 
-	/* The end margin keeps room for the hover shift inside the link box, so the
-	   arrow never leaves the gradient fill. */
-	.contact-arrow {
-		display: inline-block;
-		margin-inline: var(--space-xs);
-	}
-
-	.contact-link:hover .contact-arrow,
-	.contact-link:focus-visible .contact-arrow {
-		translate: var(--space-xs) 0;
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		.contact-arrow {
-			transition: translate var(--duration-m) var(--ease-out);
-		}
-	}
-
 	@media (min-width: 48rem) {
+		.contact-links {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+		}
+
 		.chapter {
 			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
 			gap: var(--space-l);

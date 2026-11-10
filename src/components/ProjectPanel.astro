@@ -1,0 +1,253 @@
+---
+import { getEntries, type CollectionEntry } from 'astro:content';
+import DateRange from './DateRange.astro';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, summary, type, roles, start, end, challenges, links } =
+	project.data;
+const areas = await getEntries(project.data.areas);
+
+const typeLabels = {
+	private: 'Privatprojekt',
+	team: 'Teamprojekt',
+} satisfies Record<typeof type, string>;
+
+const titleId = `projekt-${project.id}`;
+---
+
+<article class="project" aria-labelledby={titleId}>
+	<div class="project-layout">
+		<header class="project-intro">
+			<h3 id={titleId} class="project-title display">{title}</h3>
+			<p class="project-meta">
+				<span class="eyebrow project-type">{typeLabels[type]}</span>
+				<DateRange class="project-period" start={start} end={end} />
+			</p>
+			<p class="project-summary">{summary}</p>
+		</header>
+		<dl class="label-list project-facts">
+			<dt class="eyebrow">Rolle</dt>
+			<dd>
+				<ul class="inline-list project-roles" role="list">
+					{roles.map((role) => <li>{role}</li>)}
+				</ul>
+			</dd>
+			{
+				links && (
+					<>
+						<dt class="eyebrow">Website</dt>
+						{links.map((link) => (
+							<dd>
+								<a class="link project-link" href={link.url}>
+									{link.label}
+									<span class="link-arrow" aria-hidden="true">
+										→
+									</span>
+								</a>
+							</dd>
+						))}
+					</>
+				)
+			}
+		</dl>
+
+		<ol class="project-challenges" role="list">
+			{
+				challenges.map((challenge, index) => (
+					<li class="challenge">
+						<span class="challenge-number" aria-hidden="true">
+							{String(index + 1).padStart(2, '0')}
+						</span>
+						<h4 class="challenge-title">{challenge.title}</h4>
+						<p class="challenge-text">{challenge.text}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<dl class="label-list project-areas">
+			<dt class="eyebrow">Bereiche</dt>
+			<dd>
+				<ul class="inline-list" role="list">
+					{
+						areas.map((area) => (
+							<li>
+								<a class="link" href={`#bereich-${area.id}`}>
+									{area.data.title}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</dd>
+		</dl>
+	</div>
+</article>
+
+<style>
+	/* overflow clips the gradient stripe to the rounded corners. */
+	.project {
+		position: relative;
+		overflow: hidden;
+		container-type: inline-size;
+		padding: var(--space-l) var(--space-m) var(--space-m);
+		border-radius: var(--radius-xl);
+		background-color: var(--color-surface-raised);
+	}
+
+	.project::before {
+		position: absolute;
+		inset: 0 0 auto;
+		height: var(--stripe-height);
+		background: var(--gradient-brand);
+		content: '';
+	}
+
+	/* Narrow panels put the facts at the bottom above the areas; wide panels
+	   move them next to the intro. */
+	.project-layout {
+		display: grid;
+		grid-template-areas:
+			'intro'
+			'challenges'
+			'facts'
+			'areas';
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/* The title comes first in the DOM for heading navigation; order shows the
+	   meta line above it. */
+	.project-intro {
+		display: flex;
+		flex-direction: column;
+		grid-area: intro;
+		gap: var(--space-s);
+		margin-block-end: var(--space-l);
+	}
+
+	.project-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs) var(--space-s);
+		align-items: center;
+		order: -1;
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+	}
+
+	.project-type {
+		padding: calc(var(--space-xs) / 2) var(--space-s);
+		border: var(--border-hairline) solid currentColor;
+		border-radius: var(--radius-full);
+	}
+
+	.project-period {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.project-title {
+		margin: 0;
+		font-size: var(--text-l);
+	}
+
+	.project-summary {
+		max-width: var(--measure);
+		margin: 0;
+		font-size: var(--text-m);
+	}
+
+	.project-facts {
+		grid-area: facts;
+		margin-block-end: var(--space-s);
+	}
+
+	.project-areas {
+		grid-area: areas;
+	}
+
+	.project-link {
+		font-weight: 600;
+	}
+
+	.project-challenges {
+		display: grid;
+		grid-area: challenges;
+		gap: var(--space-s);
+		margin: 0 0 var(--space-l);
+		padding: 0;
+		list-style: none;
+	}
+
+	.challenge {
+		padding: var(--space-m);
+		border: var(--border-hairline) solid var(--color-line);
+		border-radius: var(--radius-l);
+		background-color: var(--color-surface);
+	}
+
+	.challenge-number {
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.challenge-title {
+		margin: var(--space-xs) 0;
+		font-size: var(--text-m);
+	}
+
+	.challenge-text {
+		margin: 0;
+		color: var(--color-text-muted);
+	}
+
+	@media (min-width: 48rem) {
+		.project {
+			padding: var(--space-l);
+		}
+	}
+
+	@container (min-width: 48rem) {
+		.project-layout {
+			grid-template-areas:
+				'intro facts'
+				'challenges challenges'
+				'areas areas';
+			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+			column-gap: var(--space-l);
+			align-items: end;
+		}
+
+		.project-facts {
+			margin-block-end: var(--space-l);
+			padding-inline-start: var(--space-m);
+			border-inline-start: var(--border-hairline) solid var(--color-line);
+		}
+
+		.project-roles > li {
+			display: block;
+		}
+
+		.project-roles > li::after {
+			content: none;
+		}
+
+		/* Up to three tiles share one row, four form a 2 × 2 grid, so no count
+		   leaves a gap. */
+		.project-challenges {
+			grid-auto-columns: minmax(0, 1fr);
+			grid-auto-flow: column;
+		}
+
+		.project-challenges:has(> :nth-child(4)) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-auto-flow: row;
+		}
+	}
+</style>

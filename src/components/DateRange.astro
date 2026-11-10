@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { comparePartialDates, formatPartialDate } from '../lib/partial-date';
+
+interface Props extends HTMLAttributes<'span'> {
+	start: string;
+	end?: string;
+}
+
+// The rest carries the parent's scope attribute, so its styles reach this <span>.
+const { start, end, ...rest } = Astro.props;
+---
+
+<span {...rest}>
+	{end === undefined && 'seit '}
+	<time datetime={start}>{formatPartialDate(start)}</time>
+	{
+		end !== undefined && comparePartialDates(end, start) !== 0 && (
+			<>
+				{' – '}
+				<time datetime={end}>{formatPartialDate(end)}</time>
+			</>
+		)
+	}
+</span>

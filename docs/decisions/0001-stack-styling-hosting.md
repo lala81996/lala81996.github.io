@@ -1,6 +1,6 @@
 # 0001 — Stack, Styling und Hosting
 
-- Status: akzeptiert
+- Status: akzeptiert, Seitenstruktur ersetzt durch [0004](0004-projekte-auf-der-startseite.md)
 - Datum: 2026-08-25
 
 ## Kontext

@@ -1,19 +1,11 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { compareCvDates } from '../lib/cv-date';
-
-type Station = CollectionEntry<'cv'>['data'];
-
-// '9999' ranks running stations first.
-const sortKey = (station: Station) => station.end ?? '9999';
+import { getCollection } from 'astro:content';
+import { comparePeriodsDesc } from '../lib/partial-date';
+import DateRange from './DateRange.astro';
 
 const stations = (await getCollection('cv'))
 	.map((entry) => entry.data)
-	.sort(
-		(a, b) =>
-			compareCvDates(sortKey(b), sortKey(a)) ||
-			compareCvDates(b.start, a.start),
-	);
+	.sort(comparePeriodsDesc);
 
 const groups = [
 	{ key: 'work', label: 'Beruf' },
@@ -25,11 +17,6 @@ const groups = [
 		stations: stations.filter((station) => station.group === group.key),
 	}))
 	.filter((group) => group.stations.length > 0);
-
-function formatDate(value: string): string {
-	const [year, month] = value.split('-');
-	return month ? `${month}/${year}` : year;
-}
 ---
 
 <div class="cv">
@@ -40,20 +27,11 @@ function formatDate(value: string): string {
 				<ol class="divided-list cv-list" role="list">
 					{group.stations.map((station) => (
 						<li class="cv-item">
-							<p class="cv-period">
-								{station.end === undefined && 'seit '}
-								<time datetime={station.start}>
-									{formatDate(station.start)}
-								</time>
-								{station.end !== undefined && station.end !== station.start && (
-									<>
-										{' – '}
-										<time datetime={station.end}>
-											{formatDate(station.end)}
-										</time>
-									</>
-								)}
-							</p>
+							<DateRange
+								class="cv-period"
+								start={station.start}
+								end={station.end}
+							/>
 							<div class="cv-content">
 								<p class="cv-title">{station.title}</p>
 								<p class="cv-meta">{station.organization}</p>

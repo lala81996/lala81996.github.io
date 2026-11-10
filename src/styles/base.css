@@ -63,6 +63,7 @@
 		--underline-thickness: 0.12em;
 		--mark-size: 1.75rem;
 		--control-size: 2.75rem;
+		--stripe-height: 0.375rem;
 
 		--font-body: system-ui, sans-serif;
 		/* Placeholder until a self-hosted display typeface is chosen. */
@@ -183,6 +184,24 @@
 		color: var(--color-on-gradient);
 	}
 
+	/* The inline margin keeps room for the hover shift inside the link box, so the
+	   arrow never leaves the gradient fill. */
+	.link-arrow {
+		display: inline-block;
+		margin-inline: var(--space-xs);
+	}
+
+	.link:hover .link-arrow,
+	.link:focus-visible .link-arrow {
+		translate: var(--space-xs) 0;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.link-arrow {
+			transition: translate var(--duration-m) var(--ease-out);
+		}
+	}
+
 	.icon-button {
 		display: grid;
 		flex-shrink: 0;
@@ -267,5 +286,19 @@
 		/* Browsers without alt-text support drop the second declaration and keep the first. */
 		content: '\00a0·\00a0';
 		content: '\00a0·\00a0' / '';
+	}
+
+	.label-list {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: var(--text-s);
+	}
+
+	.label-list dd {
+		margin: 0;
+	}
+
+	.label-list dd + dt {
+		margin-block-start: var(--space-s);
 	}
 }
