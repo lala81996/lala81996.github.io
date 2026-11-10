@@ -1,9 +1,14 @@
 [
-	{ "id": "no-need-to-rush", "text": "no need to rush." },
-	{ "id": "one-thing-at-a-time", "text": "one thing at a time." },
-	{ "id": "take-a-breath", "text": "take a breath. then build." },
-	{ "id": "stay-calm", "text": "stay calm. you’ve got this." },
-	{ "id": "its-not-that-deep", "text": "it’s not that deep. unclench." },
-	{ "id": "focus-you-got-this", "text": "focus. you got this." },
-	{ "id": "there-is-enough-time", "text": "there is enough time." }
+	{ "id": 1, "text": "you are exactly where you need to be." },
+	{ "id": 2, "text": "learn something. then learn more." },
+	{ "id": 3, "text": "no need to rush." },
+	{ "id": 4, "text": "one thing at a time." },
+	{ "id": 5, "text": "take a breath. then build." },
+	{ "id": 6, "text": "stay calm. you’ve got this." },
+	{ "id": 7, "text": "it’s not that deep. unclench." },
+	{ "id": 8, "text": "focus. you got this." },
+	{ "id": 9, "text": "you will figure it out." },
+	{ "id": 10, "text": "there is enough time." },
+	{ "id": 11, "text": "done is better than perfect." },
+	{ "id": 12, "text": "trust the process." }
 ]
